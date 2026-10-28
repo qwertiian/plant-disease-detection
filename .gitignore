@@ -1,0 +1,24 @@
+# Dataset (Download via Kaggle link in README)
+PlantLeave Dataset/
+plantvillage dataset/
+*.zip
+*.tar.gz
+
+# Keras cache
+.keras/
+
+# Python bytecode and logs
+__pycache__/
+*.py[cod]
+*$py.class
+*.log
+
+# Virtual environments
+.env
+.venv
+env/
+venv/
+
+# OS metadata
+.DS_Store
+Thumbs.db
