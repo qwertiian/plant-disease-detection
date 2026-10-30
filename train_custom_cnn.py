@@ -10,7 +10,7 @@ from tensorflow.keras import layers, models
 DATASET_DIR = "PlantLeave Dataset/plantvillage dataset/color"
 IMG_SIZE = (128, 128)
 BATCH_SIZE = 32
-EPOCHS = 5
+EPOCHS = 8
 
 # Load training and validation datasets
 train_ds = tf.keras.utils.image_dataset_from_directory(
@@ -56,8 +56,8 @@ x = layers.MaxPooling2D(2, 2)(x)
 
 # Classification Dense Head
 x = layers.Flatten()(x)
-x = layers.Dense(128, activation="relu")(x)
-x = layers.Dropout(0.5)(x)
+x = layers.Dense(256, activation="relu")(x)
+x = layers.Dropout(0.4)(x)
 outputs = layers.Dense(num_classes, activation="softmax")(x)
 
 model = models.Model(inputs=inputs, outputs=outputs)
@@ -74,8 +74,8 @@ model.summary()
 # Train model
 print("Starting Custom CNN Training...")
 model.fit(
-    train_ds.take(150),
-    validation_data=val_ds.take(30),
+    train_ds.take(250),
+    validation_data=val_ds.take(40),
     epochs=EPOCHS
 )
 

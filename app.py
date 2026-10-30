@@ -79,15 +79,28 @@ if input_option == "Sample Leaves":
         "Potato___Late_blight",
         "Tomato___healthy"
     ]
+    sample_files = {
+        "Tomato___Early_blight": "079e0d43-e9d2-4217-b8e8-2f3b989cdab2___RS_Erly.B 7588.JPG",
+        "Apple___Cedar_apple_rust": "1cfc6e73-1d86-4fb9-bffb-010163531711___FREC_C.Rust 3944.JPG",
+        "Corn_(maize)___Common_rust_": "RS_Rust 1585.JPG",
+        "Potato___Late_blight": "006cc01a-1888-4326-9b62-a65cb55a6377___RS_LB 5207.JPG",
+        "Tomato___healthy": "062c4b5a-59d7-4bc8-a1d0-abdeb6fc9c0e___RS_HL 0295.JPG"
+    }
     chosen_sample_folder = st.sidebar.selectbox("Select Sample Category:", sample_options)
     full_folder_path = os.path.join(sample_dir, chosen_sample_folder)
     
     if os.path.exists(full_folder_path):
-        files = [f for f in os.listdir(full_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
-        if files:
-            sample_img_path = os.path.join(full_folder_path, files[0])
+        target_filename = sample_files.get(chosen_sample_folder)
+        if target_filename and os.path.exists(os.path.join(full_folder_path, target_filename)):
+            sample_img_path = os.path.join(full_folder_path, target_filename)
             image_to_predict = Image.open(sample_img_path)
-            st.sidebar.info(f"Loaded: {files[0]}")
+            st.sidebar.info(f"Loaded: {target_filename}")
+        else:
+            files = [f for f in os.listdir(full_folder_path) if f.lower().endswith(('.png', '.jpg', '.jpeg'))]
+            if files:
+                sample_img_path = os.path.join(full_folder_path, files[0])
+                image_to_predict = Image.open(sample_img_path)
+                st.sidebar.info(f"Loaded: {files[0]}")
     else:
         st.sidebar.warning("Sample dataset directory not found locally. Please use 'Upload Image' to test any leaf image.")
 else:

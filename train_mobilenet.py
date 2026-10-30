@@ -34,9 +34,13 @@ val_ds = tf.keras.utils.image_dataset_from_directory(
 num_classes = len(train_ds.class_names)
 print(f"Total Classes: {num_classes}")
 
+# Build input layer with normalization for MobileNetV2 ([-1, 1])
+inputs = layers.Input(shape=(IMG_SIZE[0], IMG_SIZE[1], 3))
+rescaled = layers.Rescaling(1.0 / 127.5, offset=-1.0)(inputs)
+
 # Load Pre-trained MobileNetV2 (Freeze weights for Transfer Learning)
 base_model = tf.keras.applications.MobileNetV2(
-    input_shape=(IMG_SIZE[0], IMG_SIZE[1], 3),
+    input_tensor=rescaled,
     include_top=False,
     weights="imagenet"
 )
@@ -45,11 +49,11 @@ base_model.trainable = False
 # Connect MobileNetV2 features to classification head
 x = base_model.output
 x = layers.GlobalAveragePooling2D()(x)
-x = layers.Dense(128, activation="relu")(x)
-x = layers.Dropout(0.3)(x)
+x = layers.Dense(256, activation="relu")(x)
+x = layers.Dropout(0.2)(x)
 outputs = layers.Dense(num_classes, activation="softmax")(x)
 
-model = models.Model(inputs=base_model.input, outputs=outputs)
+model = models.Model(inputs=inputs, outputs=outputs)
 
 # Compile model
 model.compile(
@@ -63,8 +67,8 @@ model.summary()
 # Train model
 print("Starting MobileNetV2 Transfer Learning Training...")
 model.fit(
-    train_ds.take(150),
-    validation_data=val_ds.take(30),
+    train_ds.take(250),
+    validation_data=val_ds.take(40),
     epochs=EPOCHS
 )
 
